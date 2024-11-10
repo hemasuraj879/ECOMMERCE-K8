@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: roboshop
+  labels:
+    env: dev
+    tier: db
+    project: roboshop
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: dev
+      tier: db
+      project: roboshop
+
+  template:
+    metadata:
+      labels:
+        env: dev
+        tier: db
+        project: roboshop
+
+    spec:
+      containers:
+      - name: catalogue
+        image: surajk879/catalogue:1.9
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: catalogue
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  namespace: roboshop
+
+spec:
+  selector:
+    tier: db
+    env: dev
+    project: roboshop
+
+  ports:
+  - name: catalogue
+    protocol: TCP
+    port: 27017 # service port
+    targetPort: 27017 # container port
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalogue
+  namespace: roboshop
+data:
+  MONGO: "true" # keep true in double quotes
+  MONGO_URL: "mongodb://mongodb:27017/catalogue" 
+
+
