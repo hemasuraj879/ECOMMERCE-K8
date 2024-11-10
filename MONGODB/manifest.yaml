@@ -28,8 +28,7 @@ spec:
       - name: mongodb
         image: surajk879/mongodb:1.9
 
-
-# Service definition
+---
 
 apiVersion: v1
 kind: Service
